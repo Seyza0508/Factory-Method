@@ -1,9 +1,11 @@
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 // ActionEvent interacts with ActionLister to record the button being pressed //
 // this will allow us to change the price and everything //
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 
 public class PizzaOptionsGUI extends JFrame implements ActionListener {
     // window attributes //
@@ -19,12 +21,15 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
     private JCheckBox mushroomsCheckbox;
     private JCheckBox baconCheckbox;
     private JCheckBox sausageCheckBox;
+    private JLabel pizzaImageLabel;
+    private JLabel pizzaImage;
+    
 
     // constructor //
     public PizzaOptionsGUI() {
         setTitle("Pizza Ordering System"); // window title //
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-        setSize(WINDOW_HEIGHT,WINDOW_WIDTH); 
+        setSize(WINDOW_HEIGHT,WINDOW_WIDTH);  
         setLayout(new FlowLayout());
 
         // create pizza types // 
@@ -33,6 +38,10 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
         pizzaTypes = new JComboBox<>(pizzaTypeOptions);
         pizzaTypes.addActionListener(this);
         add(pizzaTypes);
+
+        // this label is used for initiating the image // 
+        pizzaImage = new JLabel();
+        add(pizzaImage); 
 
         // toppings with their labels being created from JLabel //
         toppingsLabel = new JLabel("Toppings:");
@@ -52,15 +61,20 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
 
         // we can add more as needed //
 
-        setVisible(true);
+         // Image label setup
+         pizzaImageLabel = new JLabel();
+         add(pizzaImageLabel);
+
+        setVisible(true);  
     }
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == pizzaTypes) {
             String selectedPizza = (String) pizzaTypes.getSelectedItem();
 
-            // this alters the visibility based on which pizza type is select in the combo box //
-            // I'm not sure if we need this entirely // 
+            // this sets the visability to true of pizzaImage frame based on the "selected pizza" actionlistener input //
+            // visability of the image is set to false for custom and select your pizza // 
+
 
             if (selectedPizza.equals("Custom")) {
                 toppingsLabel.setVisible(true);
@@ -68,17 +82,47 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
                 mushroomsCheckbox.setVisible(true);
                 baconCheckbox.setVisible(true);
                 sausageCheckBox.setVisible(true);
-            } else {
+                pizzaImage.setVisible(false);
+            } else if(selectedPizza.equals("Margherita")){
+                toppingsLabel.setVisible(true);
+                pepperoniCheckbox.setVisible(true);
+                mushroomsCheckbox.setVisible(true);
+                baconCheckbox.setVisible(true);
+                sausageCheckBox.setVisible(true);
+                pizzaImage.setIcon(new ImageIcon("marg.jpeg"));
+                pizzaImage.setVisible(true);
+            }
+            else if(selectedPizza.equals("Pepperoni")){
+                toppingsLabel.setVisible(true);
+                pepperoniCheckbox.setVisible(true);
+                mushroomsCheckbox.setVisible(true);
+                baconCheckbox.setVisible(true);
+                sausageCheckBox.setVisible(true);
+                pizzaImage.setIcon(new ImageIcon("pepperoni.png"));
+                pizzaImage.setVisible(true);
+            }
+            else if(selectedPizza.equals("Veggie")){
+                toppingsLabel.setVisible(true);
+                pepperoniCheckbox.setVisible(true);
+                mushroomsCheckbox.setVisible(true);
+                baconCheckbox.setVisible(true);
+                sausageCheckBox.setVisible(true);
+                pizzaImage.setIcon(new ImageIcon("veggie.png"));
+                pizzaImage.setVisible(true);
+            }
+            else{
                 toppingsLabel.setVisible(false);
                 pepperoniCheckbox.setVisible(false);
                 mushroomsCheckbox.setVisible(false);
                 baconCheckbox.setVisible(false);
                 sausageCheckBox.setVisible(false);
+                pizzaImage.setVisible(false);
             }
         }
     }
 
     public static void main(String[] args) {
         SwingUtilities.invokeLater(() -> new PizzaOptionsGUI());
+        
     }
 }
