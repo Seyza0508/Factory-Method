@@ -17,10 +17,12 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
     private JLabel toppingsLabel;
 
     // topping checkboxes //
-    private JCheckBox pepperoniCheckbox;
+    private JCheckBox chickenCheckbox;
     private JCheckBox mushroomsCheckbox;
     private JCheckBox baconCheckbox;
     private JCheckBox sausageCheckBox;
+
+    // Images //
     private JLabel pizzaImageLabel;
     private JLabel pizzaImage;
     
@@ -39,7 +41,6 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
         pizzaTypes.addActionListener(this);
         add(pizzaTypes);
 
-        // this label is used for initiating the image // 
         pizzaImage = new JLabel();
         add(pizzaImage); 
 
@@ -47,8 +48,8 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
         toppingsLabel = new JLabel("Toppings:");
         add(toppingsLabel);
 
-        pepperoniCheckbox = new JCheckBox("Pepperoni");
-        add(pepperoniCheckbox);
+        chickenCheckbox = new JCheckBox("Chicken");
+        add(chickenCheckbox);
 
         sausageCheckBox = new JCheckBox("Sausage");
         add(sausageCheckBox);
@@ -72,20 +73,22 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
         if (e.getSource() == pizzaTypes) {
             String selectedPizza = (String) pizzaTypes.getSelectedItem();
 
-            // this sets the visability to true of pizzaImage frame based on the "selected pizza" actionlistener input //
-            // visability of the image is set to false for custom and select your pizza // 
+            
 
+
+            // this alters the visibility based on which pizza type is select in the combo box //
+            // I'm not sure if we need this entirely // 
 
             if (selectedPizza.equals("Custom")) {
                 toppingsLabel.setVisible(true);
-                pepperoniCheckbox.setVisible(true);
+                chickenCheckbox.setVisible(true);
                 mushroomsCheckbox.setVisible(true);
                 baconCheckbox.setVisible(true);
                 sausageCheckBox.setVisible(true);
                 pizzaImage.setVisible(false);
             } else if(selectedPizza.equals("Margherita")){
                 toppingsLabel.setVisible(true);
-                pepperoniCheckbox.setVisible(true);
+                chickenCheckbox.setVisible(true);
                 mushroomsCheckbox.setVisible(true);
                 baconCheckbox.setVisible(true);
                 sausageCheckBox.setVisible(true);
@@ -94,7 +97,7 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
             }
             else if(selectedPizza.equals("Pepperoni")){
                 toppingsLabel.setVisible(true);
-                pepperoniCheckbox.setVisible(true);
+                chickenCheckbox.setVisible(true);
                 mushroomsCheckbox.setVisible(true);
                 baconCheckbox.setVisible(true);
                 sausageCheckBox.setVisible(true);
@@ -103,7 +106,7 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
             }
             else if(selectedPizza.equals("Veggie")){
                 toppingsLabel.setVisible(true);
-                pepperoniCheckbox.setVisible(true);
+                chickenCheckbox.setVisible(true);
                 mushroomsCheckbox.setVisible(true);
                 baconCheckbox.setVisible(true);
                 sausageCheckBox.setVisible(true);
@@ -112,7 +115,7 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
             }
             else{
                 toppingsLabel.setVisible(false);
-                pepperoniCheckbox.setVisible(false);
+                chickenCheckbox.setVisible(false);
                 mushroomsCheckbox.setVisible(false);
                 baconCheckbox.setVisible(false);
                 sausageCheckBox.setVisible(false);
