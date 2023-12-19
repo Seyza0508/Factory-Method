@@ -34,6 +34,10 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
         setSize(WINDOW_HEIGHT,WINDOW_WIDTH);  
         setLayout(new FlowLayout());
 
+
+      
+
+
         // create pizza types // 
         String[] pizzaTypeOptions = {"Select Pizza Type", "Margherita", "Pepperoni", "Veggie", "Custom"};
         // create instance of the pizza types in the combo box menu //
@@ -41,6 +45,7 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
         pizzaTypes.addActionListener(this);
         add(pizzaTypes);
 
+        // adds pizza image //
         pizzaImage = new JLabel();
         add(pizzaImage); 
 
@@ -72,12 +77,9 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == pizzaTypes) {
             String selectedPizza = (String) pizzaTypes.getSelectedItem();
-
-            
-
-
             // this alters the visibility based on which pizza type is select in the combo box //
-            // I'm not sure if we need this entirely // 
+
+            // put boolean of isChecked to use for pricing //
 
             if (selectedPizza.equals("Custom")) {
                 toppingsLabel.setVisible(true);
@@ -92,7 +94,13 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
                 mushroomsCheckbox.setVisible(true);
                 baconCheckbox.setVisible(true);
                 sausageCheckBox.setVisible(true);
-                pizzaImage.setIcon(new ImageIcon("marg.jpeg"));
+                // Load the image
+                ImageIcon icon = new ImageIcon("marg.jpeg");
+                Image image = icon.getImage();
+                // Resize the image to 200x200
+                Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                // Set the resized image as an icon for the label
+                pizzaImage.setIcon(new ImageIcon(resizedImage));
                 pizzaImage.setVisible(true);
             }
             else if(selectedPizza.equals("Pepperoni")){
@@ -101,7 +109,13 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
                 mushroomsCheckbox.setVisible(true);
                 baconCheckbox.setVisible(true);
                 sausageCheckBox.setVisible(true);
-                pizzaImage.setIcon(new ImageIcon("pepperoni.png"));
+                // Load the image
+                ImageIcon icon = new ImageIcon("pepperoni.png");
+                Image image = icon.getImage();
+                // Resize the image to 200x200
+                Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                // Set the resized image as an icon for the label
+                pizzaImage.setIcon(new ImageIcon(resizedImage));
                 pizzaImage.setVisible(true);
             }
             else if(selectedPizza.equals("Veggie")){
@@ -110,7 +124,13 @@ public class PizzaOptionsGUI extends JFrame implements ActionListener {
                 mushroomsCheckbox.setVisible(true);
                 baconCheckbox.setVisible(true);
                 sausageCheckBox.setVisible(true);
-                pizzaImage.setIcon(new ImageIcon("veggie.png"));
+              // Load the image
+                ImageIcon icon = new ImageIcon("veggie.png");
+                Image image = icon.getImage();
+                // Resize the image to 200x200
+                Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+                // Set the resized image as an icon for the label
+                pizzaImage.setIcon(new ImageIcon(resizedImage));
                 pizzaImage.setVisible(true);
             }
             else{
