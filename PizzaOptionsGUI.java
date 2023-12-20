@@ -1,151 +1,175 @@
-import javax.imageio.ImageIO;
 import javax.swing.*;
-import java.awt.*;
-// ActionEvent interacts with ActionLister to record the button being pressed //
-// this will allow us to change the price and everything //
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.File;
+import java.awt.event.*;
+import java.util.LinkedList;
+import java.util.Queue;
 
-public class PizzaOptionsGUI extends JFrame implements ActionListener {
-    // window attributes //
-    private final int WINDOW_HEIGHT = 500;
-    private final int WINDOW_WIDTH = 500;
+// The abstract class //
+abstract class Pizza {
+    public abstract String getDescription();
+}
 
-    // combo box creates the dropdown for different pizza types //
-    private JComboBox<String> pizzaTypes;
-    private JLabel toppingsLabel;
 
-    // topping checkboxes //
-    private JCheckBox chickenCheckbox;
-    private JCheckBox mushroomsCheckbox;
-    private JCheckBox baconCheckbox;
+// These are the concrete classes of the pizza classes //
+class PepperoniPizza extends Pizza {
+    @Override
+    public String getDescription() {
+        return "Pepperoni Pizza";
+    }
+}
+
+class VeggiePizza extends Pizza {
+    @Override
+    public String getDescription() {
+        return "Veggie Pizza";
+    }
+}
+
+class MargheritaPizza extends Pizza {
+    @Override
+    public String getDescription() {
+        return "Margherita Pizza";
+    }
+}
+
+class CustomPizza extends Pizza {
+    @Override
+    public String getDescription() {
+        return "Custom Pizza";
+    }
+}
+
+
+
+// The factory method itself //
+interface PizzaFactory {
+    Pizza createPizza();
+}
+
+// Concrete factories for pizza tpye //
+class PepperoniPizzaFactory implements PizzaFactory {
+    @Override
+    public Pizza createPizza() {
+        return new PepperoniPizza();
+    }
+}
+
+class MargheritaPizzaFactory implements PizzaFactory {
+    @Override
+    public Pizza createPizza() {
+        return new MargheritaPizza();
+    }
+}
+
+class VeggiePizzaFactory implements PizzaFactory {
+    @Override
+    public Pizza createPizza() {
+        return new VeggiePizza();
+    }
+}
+
+class CustomPizzaFactory implements PizzaFactory {
+    @Override
+    public Pizza createPizza() {
+        return new MargheritaPizza();
+    }
+}
+
+
+// Constructor //
+
+public class PizzaOrderingSystemGUI extends JFrame {
+    private JComboBox<String> pizzaTypesComboBox;
+    private JButton orderButton;
+    private JTextArea orderDetailsTextArea;
+    private Queue<Pizza> pizzaQueue; // Queue to manage pizzas to be made
+    // New components for toppings
     private JCheckBox sausageCheckBox;
-
-    // Images //
-    private JLabel pizzaImageLabel;
-    private JLabel pizzaImage;
+    private JCheckBox baconCheckBox;
+    private JCheckBox chickenCheckBox;
     
 
-    // constructor //
-    public PizzaOptionsGUI() {
-        setTitle("Pizza Ordering System"); // window title //
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); 
-        setSize(WINDOW_HEIGHT,WINDOW_WIDTH);  
-        setLayout(new FlowLayout());
 
+    // GUI //
 
-      
+    public PizzaOrderingSystemGUI() {
+        // window // 
+        setTitle("Pizza Ordering System");
+        setSize(400, 300);
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
+        
+        // cdropdown box for the pizza types //
+        JPanel panel = new JPanel();
+        pizzaTypesComboBox = new JComboBox<>(new String[]{"Pepperoni", "Margherita", "Veggie","Custom"});
+        orderButton = new JButton("Place Order");
+        orderDetailsTextArea = new JTextArea(10, 30);
 
-        // create pizza types // 
-        String[] pizzaTypeOptions = {"Select Pizza Type", "Margherita", "Pepperoni", "Veggie", "Custom"};
-        // create instance of the pizza types in the combo box menu //
-        pizzaTypes = new JComboBox<>(pizzaTypeOptions);
-        pizzaTypes.addActionListener(this);
-        add(pizzaTypes);
+         // Initialize topping checkboxes //
+         sausageCheckBox = new JCheckBox("Sausage");
+         baconCheckBox = new JCheckBox("Bacon");
+         chickenCheckBox = new JCheckBox("Chicken");
+ 
+         // Add checkboxes to the panel - I think these might need to be added into the "else if Custom pizza" statement // 
+         panel.add(sausageCheckBox);
+         panel.add(baconCheckBox);
+         panel.add(chickenCheckBox);
 
-        // adds pizza image //
-        pizzaImage = new JLabel();
-        add(pizzaImage); 
+        
+         // Initialize the ordering queue //
+        pizzaQueue = new LinkedList<>(); 
 
-        // toppings with their labels being created from JLabel //
-        toppingsLabel = new JLabel("Toppings:");
-        add(toppingsLabel);
+    
+        // this acts as the submit button -> takes the action listener to run through the queue // 
+        orderButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                PizzaFactory pizzaFactory = null;
 
-        chickenCheckbox = new JCheckBox("Chicken");
-        add(chickenCheckbox);
+                // Takes the value of the selected pizza and uses the associated concrete factory //
+                // I think we need to add the pizza images + panel down here //
+                // I also think the topping buttons might be better to add here //
+                String selectedPizza = (String) pizzaTypesComboBox.getSelectedItem();
+                if (selectedPizza.equals("Pepperoni")) {
+                    pizzaFactory = new PepperoniPizzaFactory();
+                } else if (selectedPizza.equals("Margherita")) {
+                    pizzaFactory = new MargheritaPizzaFactory();
+                } else if (selectedPizza.equals("Veggie")) {
+                    pizzaFactory = new VeggiePizzaFactory();
+                } else if (selectedPizza.equals("Custom")){
+                    pizzaFactory = new CustomPizzaFactory();
+                }
 
-        sausageCheckBox = new JCheckBox("Sausage");
-        add(sausageCheckBox);
+        
 
-        baconCheckbox = new JCheckBox("Bacon");
-        add(baconCheckbox);
+                // Displays order details  //
+                if (pizzaFactory != null) {
+                    Pizza pizza = pizzaFactory.createPizza();
+                    pizzaQueue.add(pizza);
+                    orderDetailsTextArea.setText("Ordered: " + pizza.getDescription());
 
-        mushroomsCheckbox = new JCheckBox("Mushrooms");
-        add(mushroomsCheckbox);
-
-        // we can add more as needed //
-
-         // Image label setup
-         pizzaImageLabel = new JLabel();
-         add(pizzaImageLabel);
-
-        setVisible(true);  
-    }
-
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == pizzaTypes) {
-            String selectedPizza = (String) pizzaTypes.getSelectedItem();
-            // this alters the visibility based on which pizza type is select in the combo box //
-
-            // put boolean of isChecked to use for pricing //
-
-            if (selectedPizza.equals("Custom")) {
-                toppingsLabel.setVisible(true);
-                chickenCheckbox.setVisible(true);
-                mushroomsCheckbox.setVisible(true);
-                baconCheckbox.setVisible(true);
-                sausageCheckBox.setVisible(true);
-                pizzaImage.setVisible(false);
-            } else if(selectedPizza.equals("Margherita")){
-                toppingsLabel.setVisible(true);
-                chickenCheckbox.setVisible(true);
-                mushroomsCheckbox.setVisible(true);
-                baconCheckbox.setVisible(true);
-                sausageCheckBox.setVisible(true);
-                // Load the image
-                ImageIcon icon = new ImageIcon("marg.jpeg");
-                Image image = icon.getImage();
-                // Resize the image to 200x200
-                Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                // Set the resized image as an icon for the label
-                pizzaImage.setIcon(new ImageIcon(resizedImage));
-                pizzaImage.setVisible(true);
+                    // Displays the pizza being made. We'll need to add the cusotom pizza toppings option//
+                    StringBuilder cues = new StringBuilder("Pizzas to be made:\n");
+                    for (Pizza p : pizzaQueue) {
+                        cues.append("- ").append(p.getDescription()).append("\n");
+                    }
+                    orderDetailsTextArea.append("\n\n" + cues.toString());
+                    
+                }
             }
-            else if(selectedPizza.equals("Pepperoni")){
-                toppingsLabel.setVisible(true);
-                chickenCheckbox.setVisible(true);
-                mushroomsCheckbox.setVisible(true);
-                baconCheckbox.setVisible(true);
-                sausageCheckBox.setVisible(true);
-                // Load the image
-                ImageIcon icon = new ImageIcon("pepperoni.png");
-                Image image = icon.getImage();
-                // Resize the image to 200x200
-                Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                // Set the resized image as an icon for the label
-                pizzaImage.setIcon(new ImageIcon(resizedImage));
-                pizzaImage.setVisible(true);
-            }
-            else if(selectedPizza.equals("Veggie")){
-                toppingsLabel.setVisible(true);
-                chickenCheckbox.setVisible(true);
-                mushroomsCheckbox.setVisible(true);
-                baconCheckbox.setVisible(true);
-                sausageCheckBox.setVisible(true);
-              // Load the image
-                ImageIcon icon = new ImageIcon("veggie.png");
-                Image image = icon.getImage();
-                // Resize the image to 200x200
-                Image resizedImage = image.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
-                // Set the resized image as an icon for the label
-                pizzaImage.setIcon(new ImageIcon(resizedImage));
-                pizzaImage.setVisible(true);
-            }
-            else{
-                toppingsLabel.setVisible(false);
-                chickenCheckbox.setVisible(false);
-                mushroomsCheckbox.setVisible(false);
-                baconCheckbox.setVisible(false);
-                sausageCheckBox.setVisible(false);
-                pizzaImage.setVisible(false);
-            }
-        }
+        });
+
+        // adds the panel after pizza is selected // 
+        panel.add(new JLabel("Select Pizza Type:"));
+        panel.add(pizzaTypesComboBox);
+        panel.add(orderButton);
+        panel.add(new JLabel("Order Details:"));
+        panel.add(new JScrollPane(orderDetailsTextArea));
+
+
+        add(panel);
+        setVisible(true);
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PizzaOptionsGUI());
-        
+        SwingUtilities.invokeLater(() -> new PizzaOrderingSystemGUI());
     }
 }
