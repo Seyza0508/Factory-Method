@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.plaf.TreeUI;
+
 import java.awt.event.*;
 import java.util.LinkedList;
 import java.util.Queue;
@@ -86,6 +88,9 @@ public class PizzaOrderingSystemGUI extends JFrame {
     private JCheckBox sausageCheckBox;
     private JCheckBox baconCheckBox;
     private JCheckBox chickenCheckBox;
+
+    
+    
     
 
 
@@ -98,9 +103,9 @@ public class PizzaOrderingSystemGUI extends JFrame {
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         
-        // cdropdown box for the pizza types //
+        // panel initiation //
         JPanel panel = new JPanel();
-        pizzaTypesComboBox = new JComboBox<>(new String[]{"Pepperoni", "Margherita", "Veggie","Custom"});
+        pizzaTypesComboBox = new JComboBox<>(new String[]{"Select a Pizza", "Pepperoni", "Margherita", "Veggie","Custom"});
         orderButton = new JButton("Place Order");
         orderDetailsTextArea = new JTextArea(10, 30);
 
@@ -108,6 +113,14 @@ public class PizzaOrderingSystemGUI extends JFrame {
          sausageCheckBox = new JCheckBox("Sausage");
          baconCheckBox = new JCheckBox("Bacon");
          chickenCheckBox = new JCheckBox("Chicken");
+
+        // Set the visibility to false because we only want them for custom //
+        sausageCheckBox.setVisible(false);
+        baconCheckBox.setVisible(false);
+        chickenCheckBox.setVisible(false);
+
+        
+        
  
          // Add checkboxes to the panel - I think these might need to be added into the "else if Custom pizza" statement // 
          panel.add(sausageCheckBox);
@@ -134,12 +147,66 @@ public class PizzaOrderingSystemGUI extends JFrame {
                     pizzaFactory = new MargheritaPizzaFactory();
                 } else if (selectedPizza.equals("Veggie")) {
                     pizzaFactory = new VeggiePizzaFactory();
-                } else if (selectedPizza.equals("Custom")){
-                    pizzaFactory = new CustomPizzaFactory();
+                } else if (selectedPizza.equals("Custom")) {
+                    // set to visible here -> the only issue is it'll only show up after the method is ran //
+                    // I think we need to set an actionListener to the actionPerformed(ActionEvent e) = Custom, then set the visibility accordingly //
+                    sausageCheckBox.setVisible(true);
+                    baconCheckBox.setVisible(true);
+                    chickenCheckBox.setVisible(true);
+                    
+                    // add booleans for the topping checkbox value //
+                    boolean addSausage = sausageCheckBox.isSelected();
+                    boolean addBacon = baconCheckBox.isSelected();
+                    boolean addChicken = chickenCheckBox.isSelected();
+                
+                    // Create CustomPizza based on selected toppings
+                    StringBuilder customPizzaDescription = new StringBuilder("Custom Pizza with: ");
+                
+                    if (addSausage) {
+                        customPizzaDescription.append("Sausage, ");
+                    }
+                    if (addBacon) {
+                        customPizzaDescription.append("Bacon, ");
+                    }
+                    if (addChicken) {
+                        customPizzaDescription.append("Chicken, ");
+                    }
+                
+                    // If no toppings are selected, set the default description
+                    if (!(addSausage || addBacon || addChicken)) {
+                        customPizzaDescription = new StringBuilder("Custom Pizza");
+                    } 
+                    
+                    else {
+                        customPizzaDescription.delete(customPizzaDescription.length() - 2, customPizzaDescription.length()); // Remove the last comma and space
+                        customPizzaDescription.append(".");
+                    }
+
+                    // store the description through this instance //
+                    final String finalDescription = customPizzaDescription.toString();
+                
+                    // Create the object of customPizza with the new discription //
+                    CustomPizza customPizza = new CustomPizza() {
+                        @Override
+                        public String getDescription() {
+                            return finalDescription; // 
+                        }
+                    };
+
+                    // Add the custom pizza object (with description) to the order details //
+                    pizzaQueue.add(customPizza); 
+                    orderDetailsTextArea.setText("Ordered: " + customPizza.getDescription());
+                
+                 // We need this order detial display otherwise it will erase the queue if we switch out of custom // 
+                    StringBuilder cues = new StringBuilder("Pizzas to be made:\n");
+                    for (Pizza p : pizzaQueue) {
+                        cues.append("- ").append(p.getDescription()).append("\n");
+                    }
+                    orderDetailsTextArea.append("\n\n" + cues.toString());
                 }
-
-        
-
+                
+            
+    
                 // Displays order details  //
                 if (pizzaFactory != null) {
                     Pizza pizza = pizzaFactory.createPizza();
@@ -152,12 +219,11 @@ public class PizzaOrderingSystemGUI extends JFrame {
                         cues.append("- ").append(p.getDescription()).append("\n");
                     }
                     orderDetailsTextArea.append("\n\n" + cues.toString());
-                    
                 }
             }
         });
 
-        // adds the panel after pizza is selected // 
+        // adds the copmponents  // 
         panel.add(new JLabel("Select Pizza Type:"));
         panel.add(pizzaTypesComboBox);
         panel.add(orderButton);
