@@ -70,7 +70,7 @@ class VeggiePizzaFactory implements PizzaFactory {
 class CustomPizzaFactory implements PizzaFactory {
     @Override
     public Pizza createPizza() {
-        return new MargheritaPizza();
+        return new CustomPizza();
     }
 }
 
