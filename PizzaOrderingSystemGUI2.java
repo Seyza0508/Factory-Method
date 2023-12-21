@@ -126,7 +126,7 @@ class CustomPizzaFactory implements PizzaFactory {
 }
 
 // Main class with GUI
-public class PizzaOrderingSystemGUI extends JFrame {
+public class PizzaOrderingSystemGUI2 extends JFrame {
     private JComboBox<String> pizzaTypesComboBox;
     private JButton orderButton;
     private JTextArea orderDetailsTextArea;
@@ -135,7 +135,7 @@ public class PizzaOrderingSystemGUI extends JFrame {
     private JCheckBox baconCheckBox;
     private JCheckBox chickenCheckBox;
 
-    public PizzaOrderingSystemGUI() {
+    public PizzaOrderingSystemGUI2() {
         setTitle("Pizza Ordering System");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -227,6 +227,6 @@ public class PizzaOrderingSystemGUI extends JFrame {
     }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> new PizzaOrderingSystemGUI());
+        SwingUtilities.invokeLater(() -> new PizzaOrderingSystemGUI2());
     }
 }
