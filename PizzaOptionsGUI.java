@@ -77,8 +77,9 @@ class CustomPizzaFactory implements PizzaFactory {
 }
 
 
-// Constructor //
 
+
+// Constructor //
 public class PizzaOrderingSystemGUI extends JFrame {
     private JComboBox<String> pizzaTypesComboBox;
     private JButton orderButton;
@@ -89,10 +90,8 @@ public class PizzaOrderingSystemGUI extends JFrame {
     private JCheckBox baconCheckBox;
     private JCheckBox chickenCheckBox;
 
-    
-    
-    
 
+    
 
     // GUI //
 
@@ -101,7 +100,6 @@ public class PizzaOrderingSystemGUI extends JFrame {
         setTitle("Pizza Ordering System");
         setSize(400, 300);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-
         
         // panel initiation //
         JPanel panel = new JPanel();
@@ -131,11 +129,39 @@ public class PizzaOrderingSystemGUI extends JFrame {
          // Initialize the ordering queue //
         pizzaQueue = new LinkedList<>(); 
 
-    
+
+
+        // if this isn't initiated before the orderButton action Listener, the toppings will only appear after running the Custom factory //
+        // if pizzaTypesComboBox = Custom, set chicken/sausage/bacon checkbox to .setVisible(false) //
+        // else, set to .setVisible(true) //
+
+    pizzaTypesComboBox.addItemListener(new ItemListener() {
+        public void itemStateChanged(ItemEvent boxVal) {
+            if (boxVal.getStateChange() == ItemEvent.SELECTED) {
+                String selectedPizza = (String) pizzaTypesComboBox.getSelectedItem();
+                // Check if the selected pizza is "Custom" and set checkbox visibility accordingly
+                if (selectedPizza.equals("Custom")) {
+                    sausageCheckBox.setVisible(true);
+                    baconCheckBox.setVisible(true);
+                    chickenCheckBox.setVisible(true);
+                    } else {
+                    sausageCheckBox.setVisible(false);
+                    baconCheckBox.setVisible(false);
+                    chickenCheckBox.setVisible(false);
+                    }
+                }
+            }
+        }
+    );
+
+
+
         // this acts as the submit button -> takes the action listener to run through the queue // 
         orderButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 PizzaFactory pizzaFactory = null;
+
+                
 
                 // Takes the value of the selected pizza and uses the associated concrete factory //
                 // I think we need to add the pizza images + panel down here //
@@ -148,11 +174,11 @@ public class PizzaOrderingSystemGUI extends JFrame {
                 } else if (selectedPizza.equals("Veggie")) {
                     pizzaFactory = new VeggiePizzaFactory();
                 } else if (selectedPizza.equals("Custom")) {
+                   
+
                     // set to visible here -> the only issue is it'll only show up after the method is ran //
                     // I think we need to set an actionListener to the actionPerformed(ActionEvent e) = Custom, then set the visibility accordingly //
-                    sausageCheckBox.setVisible(true);
-                    baconCheckBox.setVisible(true);
-                    chickenCheckBox.setVisible(true);
+        
                     
                     // add booleans for the topping checkbox value //
                     boolean addSausage = sausageCheckBox.isSelected();
