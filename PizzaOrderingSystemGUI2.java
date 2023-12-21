@@ -144,6 +144,7 @@ class CustomPizzaFactory implements PizzaFactory {
 
     @Override
     public Pizza createPizza() {
+        // Custom pizza class -> adds the description of the toppings
         CustomPizza pizza = new CustomPizza(description);
         if (description.contains("Sausage")) pizza.addTopping("Sausage");
         if (description.contains("Bacon")) pizza.addTopping("Bacon");
@@ -152,7 +153,7 @@ class CustomPizzaFactory implements PizzaFactory {
     }
 }
 
-// Main class with GUI
+// Main class with GUI 
 public class PizzaOrderingSystemGUI2 extends JFrame {
     private JComboBox<String> pizzaTypesComboBox;
     private JButton orderButton, clearOrderButton;
@@ -177,12 +178,16 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
         totalPriceLabel = new JLabel("Total Price: $0.00");
         pizzaImageLabel = new JLabel();
 
+
+        // set to false since we only want it visible for custom //
         sausageCheckBox.setVisible(false);
         baconCheckBox.setVisible(false);
         chickenCheckBox.setVisible(false);
 
         pizzaQueue = new LinkedList<>();
 
+        // use itemListener for the box value (boxVal)
+        // use switch case for display to show appropriate pizza //
         pizzaTypesComboBox.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent boxVal) {
                 if (boxVal.getStateChange() == ItemEvent.SELECTED) {
@@ -201,6 +206,7 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
                             pizzaImageLabel.setIcon(null);
                             break;
                     }
+                    // displays the toppings when selectedpizza = "Custom"
                     boolean showToppings = "Custom".equals(selectedPizza);
                     sausageCheckBox.setVisible(showToppings);
                     baconCheckBox.setVisible(showToppings);
@@ -209,6 +215,7 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
             }
         });
 
+        // use an action listener on the order button to push the order through //
         orderButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 String selectedPizza = (String) pizzaTypesComboBox.getSelectedItem();
@@ -238,6 +245,7 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
                         return; // Do nothing if no valid selection is made
                 }
 
+                // same logic for the clear order button // 
                 clearOrderButton.addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
                         pizzaQueue.clear();
@@ -247,12 +255,14 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
                     }
                 });
 
+                // use the methods //
                 Pizza pizza = pizzaFactory.createPizza();
                 pizzaQueue.add(pizza);
                 pizza.bake();
                 pizza.cut();
                 pizza.box();
 
+                // calculate price and put to the queue // 
                 double totalPrice = 0.0;
                 StringBuilder orderDetails = new StringBuilder();
                 for (Pizza p : pizzaQueue) {
@@ -264,6 +274,7 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
             }
         });
 
+        // add the panel //
         panel.add(new JLabel("Select Pizza Type:"));
         panel.add(pizzaTypesComboBox);
         panel.add(sausageCheckBox);
