@@ -155,27 +155,27 @@ class CustomPizzaFactory implements PizzaFactory {
 // Main class with GUI
 public class PizzaOrderingSystemGUI2 extends JFrame {
     private JComboBox<String> pizzaTypesComboBox;
-    private JButton orderButton;
+    private JButton orderButton, clearOrderButton;
     private JTextArea orderDetailsTextArea;
     private Queue<Pizza> pizzaQueue;
-    private JCheckBox sausageCheckBox;
-    private JCheckBox baconCheckBox;
-    private JCheckBox chickenCheckBox;
-    private JLabel totalPriceLabel;
+    private JCheckBox sausageCheckBox, baconCheckBox, chickenCheckBox;
+    private JLabel totalPriceLabel, pizzaImageLabel;
 
     public PizzaOrderingSystemGUI2() {
         setTitle("Pizza Ordering System");
-        setSize(400, 300);
+        setSize(500, 400);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
         JPanel panel = new JPanel();
         pizzaTypesComboBox = new JComboBox<>(new String[]{"Select a Pizza", "Pepperoni", "Margherita", "Veggie", "Custom"});
         orderButton = new JButton("Place Order");
+        clearOrderButton = new JButton("Clear Order");
         orderDetailsTextArea = new JTextArea(10, 30);
         sausageCheckBox = new JCheckBox("Sausage");
         baconCheckBox = new JCheckBox("Bacon");
         chickenCheckBox = new JCheckBox("Chicken");
         totalPriceLabel = new JLabel("Total Price: $0.00");
+        pizzaImageLabel = new JLabel();
 
         sausageCheckBox.setVisible(false);
         baconCheckBox.setVisible(false);
@@ -187,15 +187,24 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
             public void itemStateChanged(ItemEvent boxVal) {
                 if (boxVal.getStateChange() == ItemEvent.SELECTED) {
                     String selectedPizza = (String) pizzaTypesComboBox.getSelectedItem();
-                    if ("Custom".equals(selectedPizza)) {
-                        sausageCheckBox.setVisible(true);
-                        baconCheckBox.setVisible(true);
-                        chickenCheckBox.setVisible(true);
-                    } else {
-                        sausageCheckBox.setVisible(false);
-                        baconCheckBox.setVisible(false);
-                        chickenCheckBox.setVisible(false);
+                    switch (selectedPizza) {
+                        case "Margherita":
+                            pizzaImageLabel.setIcon(new ImageIcon("marg.jpeg"));
+                            break;
+                        case "Pepperoni":
+                            pizzaImageLabel.setIcon(new ImageIcon("pepperoni.png"));
+                            break;
+                        case "Veggie":
+                            pizzaImageLabel.setIcon(new ImageIcon("veggie.png"));
+                            break;
+                        default:
+                            pizzaImageLabel.setIcon(null);
+                            break;
                     }
+                    boolean showToppings = "Custom".equals(selectedPizza);
+                    sausageCheckBox.setVisible(showToppings);
+                    baconCheckBox.setVisible(showToppings);
+                    chickenCheckBox.setVisible(showToppings);
                 }
             }
         });
@@ -229,6 +238,15 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
                         return; // Do nothing if no valid selection is made
                 }
 
+                clearOrderButton.addActionListener(new ActionListener() {
+                    public void actionPerformed(ActionEvent e) {
+                        pizzaQueue.clear();
+                        orderDetailsTextArea.setText("");
+                        totalPriceLabel.setText("Total Price: $0.00");
+                        pizzaImageLabel.setIcon(null);
+                    }
+                });
+
                 Pizza pizza = pizzaFactory.createPizza();
                 pizzaQueue.add(pizza);
                 pizza.bake();
@@ -252,8 +270,11 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
         panel.add(baconCheckBox);
         panel.add(chickenCheckBox);
         panel.add(orderButton);
+        panel.add(clearOrderButton);
         panel.add(new JScrollPane(orderDetailsTextArea));
         panel.add(totalPriceLabel);
+        panel.add(pizzaImageLabel);
+
 
         add(panel);
         setVisible(true);
