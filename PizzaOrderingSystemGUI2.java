@@ -5,13 +5,14 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-// Unified Pizza class with detailed attributes and methods
+// Unified Pizza class with detailed attributes, methods, and pricing
 abstract class Pizza {
     private List<String> toppings = new ArrayList<>();
     private String cheese;
     private String sauce;
 
     abstract String getDescription();
+    abstract double getPrice();
 
     public void bake() {
         System.out.println("Baking " + getDescription());
@@ -29,16 +30,16 @@ abstract class Pizza {
         toppings.add(topping);
     }
 
+    protected String getToppings() {
+        return String.join(", ", toppings);
+    }
+
     public void setCheese(String cheese) {
         this.cheese = cheese;
     }
 
     public void setSauce(String sauce) {
         this.sauce = sauce;
-    }
-
-    protected String getToppings() {
-        return String.join(", ", toppings);
     }
 
     protected String getCheese() {
@@ -50,11 +51,16 @@ abstract class Pizza {
     }
 }
 
-// Concrete Pizza classes
+// Concrete Pizza classes with pricing
 class PepperoniPizza extends Pizza {
     @Override
     public String getDescription() {
         return "Pepperoni Pizza";
+    }
+
+    @Override
+    public double getPrice() {
+        return 12.99;
     }
 }
 
@@ -63,12 +69,22 @@ class VeggiePizza extends Pizza {
     public String getDescription() {
         return "Veggie Pizza";
     }
+
+    @Override
+    public double getPrice() {
+        return 11.99;
+    }
 }
 
 class MargheritaPizza extends Pizza {
     @Override
     public String getDescription() {
         return "Margherita Pizza";
+    }
+
+    @Override
+    public double getPrice() {
+        return 10.99;
     }
 }
 
@@ -82,6 +98,13 @@ class CustomPizza extends Pizza {
     @Override
     public String getDescription() {
         return description;
+    }
+
+    @Override
+    public double getPrice() {
+        double basePrice = 8.99;
+        double toppingPrice = 0.50;
+        return basePrice + (getToppings().split(", ").length * toppingPrice);
     }
 }
 
@@ -121,7 +144,11 @@ class CustomPizzaFactory implements PizzaFactory {
 
     @Override
     public Pizza createPizza() {
-        return new CustomPizza(description);
+        CustomPizza pizza = new CustomPizza(description);
+        if (description.contains("Sausage")) pizza.addTopping("Sausage");
+        if (description.contains("Bacon")) pizza.addTopping("Bacon");
+        if (description.contains("Chicken")) pizza.addTopping("Chicken");
+        return pizza;
     }
 }
 
@@ -134,6 +161,7 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
     private JCheckBox sausageCheckBox;
     private JCheckBox baconCheckBox;
     private JCheckBox chickenCheckBox;
+    private JLabel totalPriceLabel;
 
     public PizzaOrderingSystemGUI2() {
         setTitle("Pizza Ordering System");
@@ -147,6 +175,7 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
         sausageCheckBox = new JCheckBox("Sausage");
         baconCheckBox = new JCheckBox("Bacon");
         chickenCheckBox = new JCheckBox("Chicken");
+        totalPriceLabel = new JLabel("Total Price: $0.00");
 
         sausageCheckBox.setVisible(false);
         baconCheckBox.setVisible(false);
@@ -206,11 +235,14 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
                 pizza.cut();
                 pizza.box();
 
+                double totalPrice = 0.0;
                 StringBuilder orderDetails = new StringBuilder();
                 for (Pizza p : pizzaQueue) {
                     orderDetails.append(p.getDescription()).append("\n");
+                    totalPrice += p.getPrice();
                 }
                 orderDetailsTextArea.setText(orderDetails.toString());
+                totalPriceLabel.setText("Total Price: $" + String.format("%.2f", totalPrice));
             }
         });
 
@@ -221,6 +253,7 @@ public class PizzaOrderingSystemGUI2 extends JFrame {
         panel.add(chickenCheckBox);
         panel.add(orderButton);
         panel.add(new JScrollPane(orderDetailsTextArea));
+        panel.add(totalPriceLabel);
 
         add(panel);
         setVisible(true);
